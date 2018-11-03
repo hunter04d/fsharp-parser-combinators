@@ -11,10 +11,10 @@ let private quoteParser = pchar '"'
 let private isLatinLetter ch = (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')
 let private latinLetterParser = satisfy isLatinLetter "Letter"
 
-let localPartParser : Parser<String> =
-    
+let localPartParser : Parser<String> =   
     let validForAll = latinLetterParser <|> localSymbolParser <|> pdigit
-    let unquotedLocal = (sepBy1IncludeSep validForAll (validForAll <|> dotParser)) <|> many1 validForAll
+    let complexUnquoted = sepBy1IncludeSep (many1 validForAll) (dotParser |>> List.singleton) |>> List.concat
+    let unquotedLocal =  complexUnquoted <|> many1 validForAll
     let quotedLocal = 
         quoteParser 
         .>>. many1 (validForAll <|> dotParser) 
@@ -42,4 +42,4 @@ let email =
     localPartParser .>> atParser .>>. domainPartParser <?> "email"
 
 
-let emailList = (sepBy email spaces) <?> "email list"
+let emailList = spaces >>. (sepBy email spaces) <?> "email list"

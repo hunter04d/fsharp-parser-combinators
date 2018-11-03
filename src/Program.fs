@@ -15,7 +15,7 @@ let printEmailTree list : unit =
         res
             .AppendLine("{")
             .AppendLine(sprintf "%s\"local part\": \"%s\"" intent localPart)
-            .AppendLine(sprintf "%s\"domain part\":\n%s[" intent intent)
+            .Append(sprintf "%s\"domain part\":\n%s[\n%s" intent intent intent)
             .AppendJoin(",\n    ",  (List.map (escape >> (fun s -> intent + s)) domainPart) |> List.toSeq)
             .AppendLine("\n    ]")
             .Append("}")
@@ -28,7 +28,9 @@ let printEmailTree list : unit =
 [<EntryPoint>]
 let main argv =
     let res = 
-        Parser.run emailList "e.email@email.com hello@p"
+        Parser.run emailList @"
+                            from'olegs'select'oleg{'where'oleg.LastName==Dubinskiy}@orevo.this-is-a-valid-email
+                            for'parser'in'parsers%{$_|getType|equal'ParserKind.combinator}@Fsharp.lang"
     match res with
     | Parser.Success (l, _) ->
         printEmailTree l
