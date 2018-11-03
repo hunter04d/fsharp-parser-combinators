@@ -1,0 +1,14 @@
+storage none
+source https://nuget.org/api/v2
+nuget Expecto >= 8.0
+nuget FSharp.Core >= 4.0
+nuget YoloDev.Expecto.TestSdk
+nuget Microsoft.NET.Test.Sdk >= 15.0
+
+// [ FAKE GROUP ]
+group Build
+    storage none
+    source https://api.nuget.org/v3/index.json
+    nuget Fake.DotNet.Cli
+    nuget Fake.IO.FileSystem
+    nuget Fake.Core.Target
