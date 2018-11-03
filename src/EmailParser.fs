@@ -3,25 +3,25 @@ module EmailParser
 open Parser
 open System
 
-let atParser = pchar '@'
+let private atParser = pchar '@'
 let private validLocalChars = "!#$%&'*+-/=?^_`{|}~"
-let localSymbolParser = satisfy (fun ch -> validLocalChars.IndexOf(ch) <> -1) "symbol"
-let dotParser = pchar '.'
-let quoteParser = pchar '"'
-let isLatinLetter ch = (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')
-let latinLetterParser = satisfy isLatinLetter "Letter"
+let private localSymbolParser = satisfy (fun ch -> validLocalChars.IndexOf(ch) <> -1) "symbol"
+let private dotParser = pchar '.'
+let private quoteParser = pchar '"'
+let private isLatinLetter ch = (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')
+let private latinLetterParser = satisfy isLatinLetter "Letter"
 
 let localPartParser : Parser<String> =
-    let binder v =
-        match v with
-        | ((Some q1, str), Some q2) -> 
-            let res = (q1 :: str) @ [ q2 ]
-            returnP (charListToStr res)
-        | ((None, str), None) -> returnP (charListToStr str)
-        | _ -> failP "matched quotes" "one quote missing"
     
     let validForAll = latinLetterParser <|> localSymbolParser <|> pdigit
-    opt quoteParser .>>. ((many validForAll)) .>>. opt quoteParser >>= binder
+    let unquotedLocal = (sepBy1IncludeSep validForAll (validForAll <|> dotParser)) <|> many1 validForAll
+    let quotedLocal = 
+        quoteParser 
+        .>>. many1 (validForAll <|> dotParser) 
+        .>>. quoteParser 
+        |>> fun ((q1, m), q2) -> (q1 :: m) @ [q2]
+    let localPartParser = unquotedLocal <|> quotedLocal
+    localPartParser |>> charListToStr
 
 
 let domainPartParser =
@@ -42,4 +42,4 @@ let email =
     localPartParser .>> atParser .>>. domainPartParser <?> "email"
 
 
-let emailList = (sepBy email whitespaceChar) .>> EOF
+let emailList = (sepBy email spaces) <?> "email list"

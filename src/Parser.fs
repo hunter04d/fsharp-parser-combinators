@@ -103,11 +103,6 @@ let runOnInput parser input =
     // call inner function with input
     parser.parseFn input
 
-/// Run the parser on a string
-let run parser inputStr =
-    // call inner function with input
-    runOnInput parser (fromStr inputStr)
-
 /// Match an input token if the predicate is satisfied
 let satisfy predicate label =
     let innerFn input =
@@ -289,8 +284,7 @@ let whitespaceChar =
     let label = "whitespace"
     satisfy predicate label
 
-/// parse zero or more whitespace char
-let spaces = many whitespaceChar
+
 
 /// parse one or more whitespace char
 let spaces1 = many1 whitespaceChar
@@ -305,4 +299,23 @@ let sepBy1 p sep =
 let sepBy p sep =
     sepBy1 p sep <|> returnP []
 
-let EOF = (spaces .>>. (Convert.ToChar(0) |> pchar)) <?> "EOF"
+
+
+let sepBy1IncludeSep p sep =
+    //TODO: redo with stdlib
+    let rec tuplesListToList l =
+        match l with
+        | [] -> []
+        | (a, b)::tail -> [a; b] @ tuplesListToList tail
+    let sepThenP = (sep .>>. p) 
+    p .>>. ((many sepThenP) |>> tuplesListToList) |>> fun (p,pList) -> p::pList
+
+/// parse zero or more whitespace char
+let spaces = many whitespaceChar
+let private EOF = (spaces .>>. (Convert.ToChar(0) |> pchar)) <?> "EOF"
+/// Run the parser on a string
+let run parser inputStr =
+    let label = parser.label
+    let fullParser = parser .>> EOF <?> label
+    // call inner function with input
+    runOnInput fullParser (fromStr inputStr)
