@@ -1,6 +1,7 @@
 module ParserInput
 
 open System
+open System.IO
 
 type ParserPosition =
     {currentLine: string
@@ -45,6 +46,15 @@ let inputStateFromStr str =
         let separators = [|"\r\n";"\n"|]
         let lines = str.Split(separators,StringSplitOptions.None)
         {lines = lines
+         position = initialPos}
+
+let inputStateFromFile file =
+    if File.Exists(file) then
+        let lines = File.ReadAllLines(file)
+        {lines = lines
+         position = initialPos}
+    else
+        {lines = [||]
          position = initialPos}
 
 let private nullChar = char 0

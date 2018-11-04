@@ -18,17 +18,19 @@ type Parser<'a> =
     { parseFn : InputState -> Result<'a * InputState>
       label : ParserLabel }
 
-
-
-let printResult result =
-    match result with
-    | Success(value, _) -> printfn "%A" value
-    | Failure(label, error, parserPos) ->
+let printFailure (label, error, parserPos) =
         let errorLine = parserPos.currentLine
         let colPos = parserPos.column
         let linePos = parserPos.line
         let failureCaret = sprintf "%*s^ %s" colPos "" error
         printfn "Line:%i Col:%i Error parsing %s\n%s\n%s" linePos colPos label errorLine failureCaret
+
+let printResult result =
+    match result with
+    | Success(value, _) -> printfn "%A" value
+    | Failure (label, err, pos) -> printFailure (label, err, pos)
+
+
 
 /// Run the parser on a InputState
 let runOnInput parser input =
@@ -241,8 +243,12 @@ let sepBy1IncludeSep p sep =
 let spaces = many whitespaceChar
 let private EOF = (spaces .>>. (Convert.ToChar(0) |> pchar)) <?> "EOF"
 /// Run the parser on a string
-let runOnString parser inputStr =
+let runOnString inputStr parser =
     let label = parser.label
     let fullParser = parser .>> EOF <?> label
     // call inner function with input
     runOnInput fullParser (inputStateFromStr inputStr)
+let runOnFile filePath parser =
+    let label = parser.label
+    let fullParser = parser .>> EOF <?> label
+    runOnInput fullParser (inputStateFromFile filePath)

@@ -9,14 +9,16 @@ open Fake.Core.TargetOperators
 Target.create "Clean" (fun _ ->
     !! "*/bin"
     ++ "*/obj"
-    |> Shell.cleanDirs 
+    |> Shell.cleanDirs
 )
 
 Target.create "Build" (fun _ ->
     !! "./**/*.*proj"
     |> Seq.iter (DotNet.build id)
 )
-
+Target.create "Run" (fun _ ->
+    DotNet.exec id "run" "-p ./src" |> ignore
+)
 
 
 Target.create "All" ignore
@@ -25,4 +27,5 @@ Target.create "All" ignore
   ==> "Build"
   ==> "All"
 
+"Build" ==> "Run"
 Target.runOrDefault "All"

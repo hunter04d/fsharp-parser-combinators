@@ -1,0 +1,88 @@
+[
+  {
+    "local part": "email",
+    "domain part": [
+      "example",
+      "com"
+    ]
+  },
+  {
+    "local part": "firstname.lastname",
+    "domain part": [
+      "example",
+      "com"
+    ]
+  },
+  {
+    "local part": "email",
+    "domain part": [
+      "subdomain",
+      "example",
+      "com"
+    ]
+  },
+  {
+    "local part": "firstname+lastname",
+    "domain part": [
+      "example",
+      "com"
+    ]
+  },
+  {
+    "local part": "\"email\"",
+    "domain part": [
+      "example",
+      "com"
+    ]
+  },
+  {
+    "local part": "1234567890",
+    "domain part": [
+      "example",
+      "com"
+    ]
+  },
+  {
+    "local part": "email",
+    "domain part": [
+      "example-one",
+      "com"
+    ]
+  },
+  {
+    "local part": "_______",
+    "domain part": [
+      "example",
+      "com"
+    ]
+  },
+  {
+    "local part": "email",
+    "domain part": [
+      "example",
+      "name"
+    ]
+  },
+  {
+    "local part": "email",
+    "domain part": [
+      "example",
+      "museum"
+    ]
+  },
+  {
+    "local part": "email",
+    "domain part": [
+      "example",
+      "co",
+      "jp"
+    ]
+  },
+  {
+    "local part": "firstname-lastname",
+    "domain part": [
+      "example",
+      "com"
+    ]
+  }
+]
