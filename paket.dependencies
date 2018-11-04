@@ -1,6 +1,8 @@
 storage none
 source https://nuget.org/api/v2
 nuget Expecto >= 8.0
+nuget Expecto.BenchmarkDotNet
+nuget Expecto.FsCheck
 nuget FSharp.Core >= 4.0
 nuget YoloDev.Expecto.TestSdk
 nuget Microsoft.NET.Test.Sdk >= 15.0
