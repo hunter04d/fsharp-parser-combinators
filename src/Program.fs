@@ -28,7 +28,7 @@ let printEmailTree list : unit =
 [<EntryPoint>]
 let main argv =
     let res = 
-        Parser.run emailList @"
+        runOnString emailList @"
                             from'olegs'select'oleg{'where'oleg.LastName==Dubinskiy}@orevo.this-is-a-valid-email
                             for'parser'in'parsers%{$_|getType|equal'ParserKind.combinator}@Fsharp.lang"
     match res with

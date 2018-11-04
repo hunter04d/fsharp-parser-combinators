@@ -4,6 +4,7 @@
         <TargetFramework>netcoreapp2.1</TargetFramework>
     </PropertyGroup>
     <ItemGroup>
+        <Compile Include="ParserInput.fs"/>
         <Compile Include="Parser.fs"/>
         <Compile Include="EmailParser.fs"/>
         <Compile Include="Program.fs"/>
